@@ -23,6 +23,16 @@ pipeline {
             }
         }
 
+        stage('Database Migrations') {
+            when {
+                expression { env.BRANCH_NAME == 'master' }
+            }
+            steps {
+                git url: 'https://github.com/dbendelman/notejam', branch: "$BRANCH_NAME"
+                sh "bash flask/deploy/migrate.sh"
+            }
+        }
+
         stage('Deploy') {
             when {
                 expression { env.BRANCH_NAME == 'master' }
